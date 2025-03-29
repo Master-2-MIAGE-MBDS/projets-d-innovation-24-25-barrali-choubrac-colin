@@ -318,7 +318,7 @@ namespace DeepBridgeWindowsApp.UI.Forms
                 var reader = new DicomReader(path);
                 reader.LoadGlobalView();
 
-                using (var displayManager = new Services.DicomDisplayManager(reader))
+                using (var displayManager = new Services.DicomDisplayService(reader))
                 {
                     // Display basic info
                     _infoLabel.Text = $"{Path.GetFileName(path)}\n" +

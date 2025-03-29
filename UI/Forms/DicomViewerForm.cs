@@ -580,14 +580,15 @@ namespace DeepBridgeWindowsApp.UI.Forms
                 string fullPath = Path.Combine(basePath, scanFolderName);
 
                 // Create and show 3D render form
-                //var renderForm = new RenderDicomForm(
-                //    _model.DisplayService,
-                //    _model.MinSlice,
-                //    _model.MaxSlice,
-                //    fullPath,
-                //    carotidRect);
 
-                //renderForm.Show();
+                var renderForm = new RenderDicomForm(
+                    _model.DisplayService,
+                    _model.MinSlice,
+                    _model.MaxSlice,
+                    fullPath,
+                    carotidRect);
+
+                renderForm.Show();
             }
             catch (Exception ex)
             {

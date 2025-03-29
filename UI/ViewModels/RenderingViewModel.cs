@@ -17,7 +17,7 @@ namespace DeepBridgeWindowsApp.UI.ViewModels
     {
         #region Fields
 
-        private readonly DicomDisplayManager _displayManager;
+        private readonly DicomDisplayService _displayManager;
         private readonly Dicom3D _dicom3D;
         private readonly string _patientDirectory;
         private readonly Rectangle? _carotidRect;
@@ -270,7 +270,7 @@ namespace DeepBridgeWindowsApp.UI.ViewModels
         /// <param name="patientDirectory">The patient directory.</param>
         /// <param name="carotidRect">Optional carotid rectangle.</param>
         public RenderingViewModel(
-            DicomDisplayManager displayManager,
+            DicomDisplayService displayManager,
             int minSlice,
             int maxSlice,
             string patientDirectory,

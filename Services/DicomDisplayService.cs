@@ -27,7 +27,7 @@ namespace DeepBridgeWindowsApp.Services
 
         // Cache parameters
         private readonly int _maxCacheSize = 30; // Maximum number of images to keep in cache
-        private readonly Queue<int> _cacheQueue = new Queue<int>(); // For tracking cache order
+        private Queue<int> _cacheQueue = new Queue<int>(); // For tracking cache order
 
         #endregion
 
@@ -62,6 +62,32 @@ namespace DeepBridgeWindowsApp.Services
         /// Gets all slices in the series.
         /// </summary>
         public DicomMetadata[] Slices => _slices;
+
+        // Legacy property accessors for backward compatibility
+
+        /// <summary>
+        /// Legacy property for backward compatibility. Use Slices instead.
+        /// </summary>
+        [Obsolete("Use Slices property instead")]
+        public DicomMetadata[] slices => _slices;
+
+        /// <summary>
+        /// Legacy property for backward compatibility. Use GlobalView instead.
+        /// </summary>
+        [Obsolete("Use GlobalView property instead")]
+        public DicomMetadata globalView => _globalView;
+
+        /// <summary>
+        /// Legacy property for backward compatibility. Use WindowWidth instead.
+        /// </summary>
+        [Obsolete("Use WindowWidth property instead")]
+        public int windowWidth => _windowWidth;
+
+        /// <summary>
+        /// Legacy property for backward compatibility. Use WindowCenter instead.
+        /// </summary>
+        [Obsolete("Use WindowCenter property instead")]
+        public int windowCenter => _windowCenter;
 
         #endregion
 
@@ -150,6 +176,9 @@ namespace DeepBridgeWindowsApp.Services
         {
             ThrowIfDisposed();
 
+            if (_slices == null || _currentSliceIndex < 0 || _currentSliceIndex >= _slices.Length)
+                throw new InvalidOperationException("No current slice available");
+
             // Use provided values or current settings
             int width = windowWidth > 0 ? windowWidth : _windowWidth;
             int center = windowCenter > 0 ? windowCenter : _windowCenter;
@@ -179,6 +208,10 @@ namespace DeepBridgeWindowsApp.Services
         public Bitmap GetGlobalViewImage()
         {
             ThrowIfDisposed();
+
+            if (_globalView == null)
+                throw new InvalidOperationException("No global view available");
+
             return DicomImageProcessor.ConvertToBitmap(_globalView);
         }
 
@@ -279,7 +312,7 @@ namespace DeepBridgeWindowsApp.Services
             {
                 _imageCache[sliceIndex].Dispose();
                 _imageCache.Remove(sliceIndex);
-                //_cacheQueue.Remove(sliceIndex); // Remove from queue
+                _cacheQueue = new Queue<int>(_cacheQueue.Where(i => i != sliceIndex));
             }
 
             // Add to cache
@@ -324,18 +357,9 @@ namespace DeepBridgeWindowsApp.Services
             // Clear image cache
             ClearImageCache();
 
-            // Dispose slices
-            if (_slices != null)
-            {
-                foreach (var slice in _slices)
-                {
-                    slice?.Dispose();
-                }
-                _slices = null;
-            }
-
-            // Dispose global view
-            _globalView?.Dispose();
+            // We don't dispose the _reader or the _slices array since they are typically owned by the caller
+            // Set fields to null
+            _slices = null;
             _globalView = null;
 
             Logger.Info("DicomDisplayService disposed");

@@ -86,7 +86,7 @@ namespace DeepBridgeWindowsApp.Core.Rendering
         /// <param name="maxSlice">The maximum slice index to process.</param>
         /// <param name="carotidRect">Optional rectangle defining carotid region of interest.</param>
         /// <param name="progressCallback">Optional callback for reporting processing progress.</param>
-        public Dicom3D(DicomDisplayManager ddm, int minSlice, int maxSlice, Rectangle? carotidRect = null, Action<ProcessingProgress> progressCallback = null)
+        public Dicom3D(DicomDisplayService ddm, int minSlice, int maxSlice, Rectangle? carotidRect = null, Action<ProcessingProgress> progressCallback = null)
         {
             _progressCallback = progressCallback;
             _totalSlices = ddm.GetTotalSlices();
@@ -114,7 +114,7 @@ namespace DeepBridgeWindowsApp.Core.Rendering
         /// <param name="minSlice">The minimum slice index to process.</param>
         /// <param name="maxSlice">The maximum slice index to process.</param>
         /// <param name="carotidRect">Optional rectangle defining carotid region of interest.</param>
-        private void ProcessSlices(DicomDisplayManager ddm, int minSlice, int maxSlice, Rectangle? carotidRect = null)
+        private void ProcessSlices(DicomDisplayService ddm, int minSlice, int maxSlice, Rectangle? carotidRect = null)
         {
             // Get pixel spacing (in mm)
             var pixelSpacing = ddm.GetSlice(0).PixelSpacing;
@@ -193,7 +193,7 @@ namespace DeepBridgeWindowsApp.Core.Rendering
         /// <summary>
         /// Processes a single DICOM slice to extract point data.
         /// </summary>
-        private void ProcessSingleSlice(DicomDisplayManager ddm, int z, Rectangle? carotidRect, ProcessingContext context)
+        private void ProcessSingleSlice(DicomDisplayService ddm, int z, Rectangle? carotidRect, ProcessingContext context)
         {
             var localVertices = new List<Vector3>();
             var localColors = new List<Vector3>();
